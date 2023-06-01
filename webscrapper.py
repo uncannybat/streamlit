@@ -2,34 +2,34 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 
-def scrape_anchor_titles(url):
-    
+def scrape_episode_titles(url):
+    # Make a request to the URL and get the HTML content
     response = requests.get(url)
     content = response.content
 
-   
+    # Create a BeautifulSoup object to parse the HTML
     soup = BeautifulSoup(content, "html.parser")
 
-   
-    anchor_tags = soup.find_all("a")
-    titles = [tag.get("title") for tag in anchor_tags if tag.get("title")]
+    # Find all anchor tags with class="episode-title" and extract the text
+    episode_tags = soup.find_all("a", class_="episode-title")
+    titles = [tag.text for tag in episode_tags]
 
     return titles
 
+# Streamlit app title
+st.title("Episode Title Scraper")
 
-st.title("Anchor Tag Title Scraper")
-
-
+# Define the URL input field
 url = st.text_input("Enter a URL to scrape")
 
-
+# Define the scrape button
 if st.button("Scrape"):
     if url:
-       
-        scraped_titles = scrape_anchor_titles(url)
+        # Call the scrape_episode_titles function
+        scraped_titles = scrape_episode_titles(url)
 
-       
-        st.write("Scraped Titles:")
+        # Display the scraped titles
+        st.write("Scraped Episode Titles:")
         for title in scraped_titles:
             st.write(title)
     else:
