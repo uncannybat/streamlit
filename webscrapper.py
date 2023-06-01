@@ -2,37 +2,35 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 
-class WebScraper:
-    def __init__(self):
-        self.url = ""
+def scrape_anchors(url):
+    # Make a request to the URL and get the HTML content
+    response = requests.get(url)
+    content = response.content
 
-    def scrape(self):
-       
-        response = requests.get(self.url)
-        content = response.content
+    # Create a BeautifulSoup object to parse the HTML
+    soup = BeautifulSoup(content, "html.parser")
 
-       
-        soup = BeautifulSoup(content, "html.parser")
+    # Find all anchor tags and extract their href attributes
+    anchor_tags = soup.find_all("a")
+    hrefs = [tag.get("href") for tag in anchor_tags]
 
-        
-        anchor_tags = soup.find_all("a")
-        titles = [tag.get("title") for tag in anchor_tags if tag.get("title")]
+    return hrefs
 
-        return titles
+# Streamlit app title
+st.title("Anchor Tag Web Scraper")
 
+# Define the URL input field
+url = st.text_input("Enter a URL to scrape")
 
-
-st.title("AnimePahe.ru Anchor Tag Titles")
-
-
-scraper = WebScraper()
-
-
-scraper.url = "https://www.animepahe.ru/"
-
-
+# Define the scrape button
 if st.button("Scrape"):
-   
-    scraped_titles = scraper.scrape()
+    if url:
+        # Call the scrape_anchors function
+        scraped_hrefs = scrape_anchors(url)
 
-   
+        # Display the scraped anchor tags
+        st.write("Scraped Anchor Tags:")
+        for href in scraped_hrefs:
+            st.write(href)
+    else:
+        st.write("Please enter a URL to scrape")
