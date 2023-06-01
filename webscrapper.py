@@ -18,6 +18,6 @@ if st.button("Scrape"):
     soup = BeautifulSoup(content, "html.parser")
 
     
-    data = soup.find("episode-title").text 
+    data = soup.find("p1").text 
     st.write("Scraped Data:")
     st.write(data)
