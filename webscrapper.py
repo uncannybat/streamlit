@@ -2,22 +2,37 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 
+class WebScraper:
+    def __init__(self):
+        self.url = ""
 
-st.title("Web Scraping App")
+    def scrape(self):
+       
+        response = requests.get(self.url)
+        content = response.content
+
+       
+        soup = BeautifulSoup(content, "html.parser")
+
+        
+        anchor_tags = soup.find_all("a")
+        titles = [tag.get("title") for tag in anchor_tags if tag.get("title")]
+
+        return titles
 
 
-url = st.text_input("Enter a URL to scrape")
+
+st.title("AnimePahe.ru Anchor Tag Titles")
+
+
+scraper = WebScraper()
+
+
+scraper.url = "https://www.animepahe.ru/"
 
 
 if st.button("Scrape"):
    
-    response = requests.get(url)
-    content = response.content
+    scraped_titles = scraper.scrape()
 
    
-    soup = BeautifulSoup(content, "html.parser")
-
-    
-    data = soup.find("p1").text 
-    st.write("Scraped Data:")
-    st.write(data)
